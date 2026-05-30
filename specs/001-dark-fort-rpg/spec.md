@@ -42,7 +42,7 @@ As a player, I want to explore new rooms, encounter monsters, run combat, manage
 3. **Given** the player flees from combat, **When** they choose to flee, **Then** they take d4 damage and the room remains unexplored (can be re-entered later with 1-in-4 chance of weak monster).
 4. **Given** the player has armor equipped, **When** they take damage in combat, **Then** a d4 is rolled per hit and subtracted from incoming damage.
 5. **Given** the player defeats a monster, **When** it dies, **Then** the monster's points are added to the player's total and loot is rolled per the monster's loot table.
-6. **Given** the player re-enters a previously explored or fled-from room, **When** they enter, **Then** there is a 1-in-4 chance a weak monster has taken residence.
+6. **Given** the player re-enters a previously explored or fled-from room, **When** they enter, **Then** there is a 1-in-4 chance a weak monster has taken residence (checked on every re-entry).
 
 ---
 
@@ -61,7 +61,7 @@ As a player, I want to use potions to heal, activate scrolls for special effects
 3. **Given** the player has the "Palms Open the Southern Gate" scroll (d4 uses), **When** they activate it in combat, **Then** it deals d6+1 damage and one use is expended.
 4. **Given** the player has the "Aegis of Sorrow" scroll (d4 uses), **When** they activate it, **Then** incoming damage is reduced by d4 per attack for the remainder of combat, consuming one use.
 5. **Given** the player has the "False Omen" scroll, **When** they activate it, **Then** they may either choose the result of the next room table roll or reroll any single die.
-6. **Given** the player has the Cloak of Invisibility equipped (d4 charges total), **When** they enter a room with monsters, **Then** they may expend one charge to avoid the fight while still collecting the monster points; cloak is consumed after all charges used.
+6. **Given** the player has the Cloak of Invisibility equipped (d4 charges total), **When** they enter a room with monsters and expend one charge, **Then** the fight is avoided, the monster's full points are acquired, but no other loot (silver, items, scrolls) is received; cloak is consumed after all charges used.
 7. **Given** the player encounters a Void Peddler, **When** they enter the shop, **Then** they can purchase any item from the price list using silver, and silver is deducted accordingly.
 8. **Given** the player has silver but a full or unlimited inventory, **When** they buy an item from the Void Peddler, **Then** the item is added to inventory.
 
@@ -80,7 +80,10 @@ As a player, I want to level up when I meet requirements (12 rooms explored + 15
 1. **Given** the player has explored 12 rooms (including entrance) AND has 15+ points, **When** these conditions are met, **Then** the player levels up: 15 points are deducted from the total (room count continues accumulating), and 1d6 is rolled for a benefit from the unscratched level-up table.
 2. **Given** the player has collected 40+ silver, **When** they choose to give 40 silver to the poor of ruined Wästland, **Then** exactly 40 silver is deducted (remaining silver kept) and the player levels up, rolling 1d6 for a benefit.
 3. **Given** the "Knighted" benefit is rolled (1), **When** applied, **Then** the player gains the title Sir/Lady Kargunt and the result is scratched off the level-up table.
-4. **Given** the "Max HP becomes 20" benefit is rolled (3), **When** applied, **Then** the player's maximum HP increases to 20 and current HP is unaffected.
+4. **Given** the "+1 attack permanently" benefit is rolled (2), **When** applied, **Then** the player's attack modifier increases by 1 for all future hit rolls, and the result is scratched off.
+5. **Given** the "Max HP becomes 20" benefit is rolled (3), **When** applied, **Then** the player's maximum HP increases to 20 and current HP is unaffected.
+6. **Given** the "Gain 5 potions" benefit is rolled (4), **When** applied, **Then** 5 potions are added to the player's inventory and the result is scratched off.
+7. **Given** the "Gain Mighty Zweihänder" benefit is rolled (5), **When** applied, **Then** the Mighty Zweihänder (d6+2 damage) is added to inventory and the result is scratched off.
 5. **Given** all 6 level-up benefits have been earned, **When** the player retires, **Then** a congratulations screen appears and the game is complete.
 6. **Given** the "Halved damage" benefit is rolled (6), **When** applied, **Then** the player chooses one specific Weak monster type and one specific Tough monster type; only those two types deal half damage permanently, and the result is scratched off.
 
@@ -100,7 +103,7 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 2. **Given** the player fights a Necro-Sorcerer, **When** the sorcerer makes any attack (normal or death-ray every other), **Then** the sorcerer's damage alternates between d4 and d6 death-ray; a separate 1-in-6 roll on EVERY attack determines if the player is transformed into a maggot (instant game over).
 3. **Given** the player fights a Medusa, **When** the Medusa makes any attack, **Then** a 1-in-6 roll determines petrification with instant game over.
 4. **Given** the player has 0 HP, **When** this occurs, **Then** the game ends immediately showing a death screen and option to restart.
-5. **Given** the player encounters a Riddling Soothsayer, **When** rolling odd on d6, **Then** the player chooses to gain 10 silver or 3 points; when rolling even, the player takes d4 damage ignoring armor.
+5. **Given** the player encounters a Riddling Soothsayer, **When** a separate d6 is rolled, **Then** on odd the player chooses to gain 10 silver or 3 points; on even the player takes d4 damage ignoring armor.
 6. **Given** the player kills a Ruin Basilisk, **When** the 2-in-6 check succeeds, **Then** the player immediately levels up.
 7. **Given** the player kills a Small Stone Troll, **When** awarding points, **Then** the troll grants 7 points instead of its combat rating of 5.
 
@@ -113,8 +116,8 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - What happens when the player unequips armor mid-combat? The armor's damage reduction no longer applies for subsequent hits in that combat.
 - How does the Cloak of Invisibility interact with the Soothsayer or traps (non-monster room content)? The cloak only avoids monster fights — traps, soothsayers, and void peddlers still trigger normally.
 - What happens when all level-up benefits are scratched off but the player has not yet "retired"? The player continues until they choose to retire; the game congratulates and ends.
-- What happens on re-entering the entrance room? Follow the re-entry rule: 1-in-4 chance of a weak monster.
-- How are "d6 rooms explored" counted? Each unique room entered (including entrance) counts as 1; re-entering the same room does not increase the count.
+- What happens on re-entering the entrance room? Follow the re-entry rule: 1-in-4 chance of a weak monster on every re-entry.
+- How are explored rooms counted? Each unique room fully cleared (monster killed, trap survived, or peaceful encounter resolved) counts as 1, including the entrance. Re-entering the same room does not increase the count. Fled rooms do NOT count — the room must be cleared to count as explored.
 - Can the player use a potion or scroll during combat? Potions: yes, as an action. Scrolls: yes, following each scroll's activation rules.
 - What happens when the game is saved mid-combat and reloaded? Full combat state is restored: monster HP, death-ray alternation counter, active scroll effect remaining uses/duration, cloak charge count.
 
@@ -126,7 +129,7 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - **FR-002**: System MUST generate the Entrance Room with shape from the 2d6 room shape table, d4 doors, and one of four random outcomes (item, weak monster, scroll, quiet) per the Entrance Room table.
 - **FR-003**: System MUST generate new rooms upon door selection with random shape (2d6 table), random number of doors (d4 table), and random content (d6 room table).
 - **FR-004**: System MUST implement the dice-based combat system: player rolls d6 to hit, comparing against monster's points; on success, weapon damage is dealt (d4-1 if unarmed); on failure, player takes monster damage (reduced by d4 rolled per hit if armor equipped).
-- **FR-005**: System MUST support combat flee: player takes d4 damage, room remains unexplored, re-entry has 1-in-4 chance of weak monster.
+- **FR-005**: System MUST support combat flee: player takes d4 damage, room remains unexplored (does not count toward explored room total), monster persists until killed; re-entry has 1-in-4 chance of weak monster.
 - **FR-006**: System MUST implement all 4 Weak Monster types with their stats, damage, HP, and loot tables (Skeleton, Cultist, Goblin, Undead Hound).
 - **FR-007**: System MUST implement all 4 Tough Monster types with their stats, special abilities, damage, HP, and loot tables (Necro-Sorcerer, Stone Troll, Medusa, Basilisk).
 - **FR-008**: System MUST handle monster deaths: slain monsters grant their points; loot is rolled per monster table; Small Stone Troll awards 7 points on kill.
@@ -134,12 +137,12 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - **FR-010**: System MUST implement all 4 scroll types with their effects and usage limits (Summon Weak Daemon, Palms Open the Southern Gate, Aegis of Sorrow, False Omen).
 - **FR-011**: System MUST implement the Void Peddler shop: display all items with prices; allow purchase if player has sufficient silver; deduct silver on purchase.
 - **FR-012**: System MUST implement the level-up system: check two conditions (12 rooms + 15 points OR 40+ silver to donate); on rooms+points path: deduct 15 points from total (room count persists); on silver path: deduct exactly 40 silver (remaining silver kept); roll 1d6 for benefit from unscratched table; apply benefit; scratch off result; congratulate on completing all 6.
-- **FR-013**: System MUST implement pit traps (d6 roll: 1-3 take d6 damage, +1 if rope) and the Riddling Soothsayer (odd: gain 10 silver or 3 points; even: take d4 damage ignoring armor).
+- **FR-013**: System MUST implement pit traps (d6 roll: 1-3 take d6 damage, +1 if rope) and the Riddling Soothsayer (separate d6 roll: odd = gain 10 silver or 3 points; even = take d4 damage ignoring armor).
 - **FR-014**: System MUST implement monster special abilities: Necro-Sorcerer death-ray (every other attack deals d6 instead of d4) + 1-in-6 maggot transformation on EVERY attack (normal and death-ray); Medusa 1-in-6 petrification on EVERY attack; Basilisk 2-in-6 immediate level-up on kill.
 - **FR-015**: System MUST implement death at 0 HP: game ends, death screen displayed, option to restart.
 - **FR-016**: System MUST track explored room count (unique rooms only), total points from slain monsters, current/max HP, silver balance, inventory, active scroll effects, and level-up table state.
 - **FR-017**: System MUST NOT allow entering a new room through a door that has no unexplored path (e.g., from a dead-end room, only backtracking is allowed).
-- **FR-018**: System MUST apply the Cloak of Invisibility effect: when equipped, player may avoid up to d4 fights while collecting monster points from avoided encounters; cloak is consumed after all d4 charges are used.
+- **FR-018**: System MUST apply the Cloak of Invisibility effect: when equipped, player may expend one charge to avoid a fight, gaining the monster's full points but no other loot (no silver, items, or scrolls); cloak is consumed after all d4 charges are used.
 
 ### Key Entities
 
@@ -164,6 +167,11 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - Q: Does the Cloak of Invisibility have d4 charges total (consumed) or recharge per room? → A: d4 charges total; cloak is consumed after all charges used
 - Q: Should the entrance room use the 2d6 room shape table or have its own shape rule? → A: Use the 2d6 shape table for entrance room (same as all rooms)
 - Q: Should save system preserve mid-combat state or only save between rooms? → A: Preserve full mid-combat state (monster HP, death-ray counter, active effects, charges)
+- Q: Should all six level-up benefits have explicit acceptance scenarios? → A: Yes; added scenarios for +1 attack, 5 potions, and Mighty Zweihänder
+- Q: Does cloak of invisibility grant full monster points? What about loot? → A: Full points; no other loot (silver/items) from avoided fights
+- Q: Do fled rooms count as explored? What about the monster? → A: Fled rooms do NOT count as explored; the monster stays until killed, only then is the room explored
+- Q: Does the 1-in-4 weak monster re-entry check trigger on every re-entry or only once? → A: Every re-entry — roll 1-in-4 each time player enters a previously visited room
+- Q: What determines the Soothsayer's odd/even outcome? → A: A separate d6 roll (not the room content d6 that triggered the Soothsayer)
 
 ## Success Criteria
 
