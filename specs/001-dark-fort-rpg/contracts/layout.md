@@ -34,9 +34,9 @@
 
 ```css
 TitleScreen {
-    align: center middle;
-    grid-size: 1;
-    grid-rows: 1fr auto 1fr;
+  align: center middle;
+  grid-size: 1;
+  grid-rows: 1fr auto 1fr;
 }
 ```
 
@@ -71,18 +71,32 @@ TitleScreen {
 
 ```css
 GameScreen {
-    grid-size: 2;
-    grid-rows: auto 1fr auto;
-    grid-columns: 2fr 1fr;
+  grid-size: 2;
+  grid-rows: auto 1fr auto;
+  grid-columns: 2fr 1fr;
 }
 
-#stat-bar { column-span: 2; height: 3; }
-#room-map { row: 2; column: 0; }
-#room-info { row: 2; column: 1; border: solid $primary; }
-#actions { column-span: 2; height: auto; }
+#stat-bar {
+  column-span: 2;
+  height: 3;
+}
+#room-map {
+  row: 2;
+  column: 0;
+}
+#room-info {
+  row: 2;
+  column: 1;
+  border: solid $primary;
+}
+#actions {
+  column-span: 2;
+  height: auto;
+}
 ```
 
 **RoomInfo panel content** (varies by room content):
+
 - Empty room: "The room is quiet. Explored."
 - Pit trap: "A pit opens beneath you! Roll d6..."
 - Soothsayer: "A hooded figure speaks in riddles..."
@@ -118,17 +132,30 @@ GameScreen {
 
 ```css
 CombatScreen {
-    grid-size: 1;
-    grid-rows: auto auto 1fr auto;
+  grid-size: 1;
+  grid-rows: auto auto 1fr auto;
 }
 
-#monster-bar { height: 3; border: solid red; }
-#player-bar { height: 3; border: solid green; }
-#combat-log { border: solid $primary-darken-2; overflow-y: scroll; }
-#combat-actions { height: 3; align: center middle; }
+#monster-bar {
+  height: 3;
+  border: solid red;
+}
+#player-bar {
+  height: 3;
+  border: solid green;
+}
+#combat-log {
+  border: solid $primary-darken-2;
+  overflow-y: scroll;
+}
+#combat-actions {
+  height: 3;
+  align: center middle;
+}
 ```
 
 **Special ability indicators** in MonsterBar:
+
 - "⚡ DEATH-RAY ACTIVE" (Necro-Sorcerer on death-ray turn)
 - "🐍 Petrify risk!" (Medusa, always shown)
 - "⭐ Level-up on kill!" (Basilisk, always shown)
@@ -168,15 +195,30 @@ CombatScreen {
 
 ```css
 CharacterScreen {
-    grid-size: 2;
-    grid-columns: 1fr 1fr;
-    grid-rows: auto 1fr auto;
+  grid-size: 2;
+  grid-columns: 1fr 1fr;
+  grid-rows: auto 1fr auto;
 }
 
-#char-stats { column: 0; row: 0; }
-#equipment { column: 0; row: 1; border: solid $secondary; }
-#inventory { column: 1; row: 0; row-span: 2; border: solid $secondary; }
-#active-effects { column: 0; row: 2; }
+#char-stats {
+  column: 0;
+  row: 0;
+}
+#equipment {
+  column: 0;
+  row: 1;
+  border: solid $secondary;
+}
+#inventory {
+  column: 1;
+  row: 0;
+  row-span: 2;
+  border: solid $secondary;
+}
+#active-effects {
+  column: 0;
+  row: 2;
+}
 ```
 
 ---
@@ -214,14 +256,24 @@ CharacterScreen {
 
 ```css
 ShopScreen {
-    grid-size: 1;
-    grid-rows: auto auto 1fr auto;
+  grid-size: 1;
+  grid-rows: auto auto 1fr auto;
 }
 
-#shop-title { height: 3; align: center middle; }
-#silver-display { height: 1; }
-#price-table { border: solid $accent; }
-#shop-footer { height: 1; align: center middle; }
+#shop-title {
+  height: 3;
+  align: center middle;
+}
+#silver-display {
+  height: 1;
+}
+#price-table {
+  border: solid $accent;
+}
+#shop-footer {
+  height: 1;
+  align: center middle;
+}
 ```
 
 **Affordability highlighting**: Items player can't afford are dimmed (`$text-disabled`); affordable items are bright (`$text-success`).
@@ -261,9 +313,9 @@ ShopScreen {
 
 ```css
 LevelUpScreen {
-    align: center middle;
-    grid-size: 1;
-    grid-rows: auto auto 1fr auto;
+  align: center middle;
+  grid-size: 1;
+  grid-rows: auto auto 1fr auto;
 }
 ```
 
@@ -271,14 +323,14 @@ LevelUpScreen {
 
 ## Widget Reuse Across Screens
 
-| Widget | TitleScreen | GameScreen | CombatScreen | CharacterScreen | ShopScreen | LevelUpScreen |
-|--------|:-----------:|:----------:|:------------:|:---------------:|:----------:|:-------------:|
-| `StatBar` | — | ✅ Header | — | — | — | — |
-| `DiceDisplay` | — | Used inline | Used inline | — | — | — |
-| `RoomMap` | — | ✅ Left | — | — | — | — |
-| `CombatLog` | — | — | ✅ Center | — | — | — |
-| `InventoryGrid` | — | — | — | ✅ Right | — | — |
-| `ActionBar` | — | ✅ Footer | ✅ Footer | — | — | — |
+| Widget          | TitleScreen | GameScreen  | CombatScreen | CharacterScreen | ShopScreen | LevelUpScreen |
+| --------------- | :---------: | :---------: | :----------: | :-------------: | :--------: | :-----------: |
+| `StatBar`       |      —      |  ✅ Header  |      —       |        —        |     —      |       —       |
+| `DiceDisplay`   |      —      | Used inline | Used inline  |        —        |     —      |       —       |
+| `RoomMap`       |      —      |   ✅ Left   |      —       |        —        |     —      |       —       |
+| `CombatLog`     |      —      |      —      |  ✅ Center   |        —        |     —      |       —       |
+| `InventoryGrid` |      —      |      —      |      —       |    ✅ Right     |     —      |       —       |
+| `ActionBar`     |      —      |  ✅ Footer  |  ✅ Footer   |        —        |     —      |       —       |
 
 ## Visual Theme Constants
 
@@ -303,14 +355,14 @@ Door (dead end):    "✗" symbol
 
 ## Responsive Minimums
 
-| Screen | Min Width | Min Height | Degradation |
-|--------|:---------:|:----------:|-------------|
-| TitleScreen | 60 | 15 | Title text wraps |
-| GameScreen | 80 | 20 | RoomMap hidden if <70 wide; RoomInfo full width |
-| CombatScreen | 60 | 18 | CombatLog truncated to 8 lines |
-| CharacterScreen | 70 | 20 | Inventory scrolls if too many items |
-| ShopScreen | 50 | 16 | PriceTable scrolls |
-| LevelUpScreen | 50 | 14 | Centered, always fits |
+| Screen          | Min Width | Min Height | Degradation                                     |
+| --------------- | :-------: | :--------: | ----------------------------------------------- |
+| TitleScreen     |    60     |     15     | Title text wraps                                |
+| GameScreen      |    80     |     20     | RoomMap hidden if <70 wide; RoomInfo full width |
+| CombatScreen    |    60     |     18     | CombatLog truncated to 8 lines                  |
+| CharacterScreen |    70     |     20     | Inventory scrolls if too many items             |
+| ShopScreen      |    50     |     16     | PriceTable scrolls                              |
+| LevelUpScreen   |    50     |     14     | Centered, always fits                           |
 
 ## Theme Registration
 
