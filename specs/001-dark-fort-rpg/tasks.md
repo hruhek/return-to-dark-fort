@@ -100,17 +100,19 @@
 - [ ] T031 [P] [US2] Integration test for GameScreen ↔ room exploration in `tests/integration/test_game_screen.py` (choose door, new room rendered, content interaction)
 - [ ] T032 [P] [US2] Integration test for CombatScreen ↔ CombatEngine in `tests/integration/test_combat_screen.py` (attack, hit/miss, damage, monster HP, flee, death)
 - [ ] T033 [US2] E2E test for explore + fight in `tests/e2e/test_explore_and_fight.py` (full flow: entrance → explore 3 rooms → fight at least 1 weak + 1 tough monster)
+- [ ] T033b [P] [US2] Unit test for dead-end room handling in `tests/unit/test_room_generator.py` — verify room with 0 doors blocks forward exploration, only backtracking available
 
 ### Implementation for User Story 2
 
 > **Layout**: Follow `contracts/layout.md` — GameScreen: RoomMap (left 2/3), RoomInfo (right 1/3), ActionBar (footer). CombatScreen modal: MonsterBar, PlayerBar, CombatLog, CombatActions.
 
 - [ ] T034 [US2] Implement `RoomGenerator` in `src/dark_fort/services/room_generator.py` — full room table (1d6: nothing, pit trap, soothsayer, weak monster, tough monster, void peddler), shape (2d6), doors (d4), re-entry 1-in-4 weak spawn
+- [ ] T034b [US2] Enforce dead-end constraint in `src/dark_fort/services/room_generator.py` — doors=0 → no door options presented; player can only backtrack to previously visited connected room
 - [ ] T035 [US2] Implement `CombatEngine` in `src/dark_fort/services/combat.py` — hit roll (d6 vs points), weapon damage, unarmed d4-1, monster damage, armor per-hit d4, flee d4, death at 0 HP, loot on kill (silver, items per monster table), points awarded
 - [ ] T036 [P] [US2] Create `RoomMap` widget in `src/dark_fort/widgets/room_map.py` — visual room graph, current room highlighted, explored/unexplored status
 - [ ] T037 [P] [US2] Create `CombatLog` widget in `src/dark_fort/widgets/combat_log.py` — scrollable event feed (hit rolls, damage dealt, monster attacks, loot)
 - [ ] T038 [US2] Implement `CombatScreen` modal in `src/dark_fort/screens/combat_screen.py` per contracts/screens.md — A=Attack, P=Potion, S=Scroll, F=Flee; monster HP bar + player HP bar + combat log
-- [ ] T039 [US2] Implement `GameScreen` room exploration in `src/dark_fort/screens/game_screen.py` — door selection, room generation, combat trigger, content resolution, room map update, stat bar refresh
+- [ ] T039 [US2] Implement `GameScreen` room exploration in `src/dark_fort/screens/game_screen.py` — door selection (hide forward doors when dead-end), room generation, combat trigger, content resolution, room map update, stat bar refresh
 - [ ] T040 [US2] Wire `CombatScreen` ↔ `GameScreen` transition in `src/dark_fort/app.py` — on monster encounter push CombatScreen, on victory/flee/death pop back
 
 **Checkpoint**: Player can explore multiple rooms, fight all 8 monster types, flee, see map grow, and track stats
@@ -127,9 +129,10 @@
 
 > **NOTE: Write these tests FIRST per TDD. Ensure they FAIL before implementation.**
 
-- [ ] T041 [P] [US3] Unit test for inventory management in `tests/unit/test_inventory.py` (equip/unequip weapon, equip/unequip armor, use potion removes from inventory, scroll uses decrement, cloak charges decrement)
+- [ ] T041 [P] [US3] Unit test for inventory management in `tests/unit/test_inventory.py` (equip/unequip weapon, equip/unequip armor, use potion removes from inventory, scroll uses decrement)
 - [ ] T042 [P] [US3] Unit test for shop service in `tests/unit/test_shop.py` (buy with sufficient silver, reject with insufficient, item added to inventory, silver deducted)
 - [ ] T043 [P] [US3] Unit test for scroll effects in `tests/unit/test_scrolls.py` (Summon Daemon d4 fights d4 dmg, Palms d6+1 d4 uses, Aegis -d4 d4 uses, False Omen choose room/reroll)
+- [ ] T043b [P] [US3] Unit test for Cloak of Invisibility combat bypass in `tests/unit/test_cloak.py` — expend 1 charge avoids fight, full monster points awarded, no silver/items/scrolls from avoided fight, cloak consumed after all charges used, d4 charges total
 - [ ] T044 [P] [US3] Integration test for CharacterScreen ↔ Inventory in `tests/integration/test_character_screen.py` (open, view items, equip weapon, use potion, close)
 - [ ] T045 [P] [US3] Integration test for ShopScreen ↔ ShopService in `tests/integration/test_shop_screen.py` (open shop, view prices, buy item, insufficient silver rejection)
 - [ ] T046 [US3] E2E test for items + shop in `tests/e2e/test_items_and_shop.py` (full flow: find Void Peddler → buy items → use potion → activate scroll → verify effects)
@@ -143,6 +146,7 @@
 - [ ] T049 [US3] Implement scroll effects service in `src/dark_fort/services/scrolls.py` — Summon Weak Daemon (d4 fights, d4 damage), Palms Open the Southern Gate (d6+1, d4 uses), Aegis of Sorrow (-d4 per hit, d4 uses, combat duration), False Omen (choose room result OR reroll any die)
 - [ ] T050 [US3] Implement `ShopService` in `src/dark_fort/services/shop.py` — Void Peddler price table lookup, purchase validation (sufficient silver), item instantiation
 - [ ] T051 [US3] Implement `ShopScreen` modal in `src/dark_fort/screens/shop_screen.py` per contracts/screens.md — price table display, item selection, buy action, silver display
+- [ ] T051b [US3] Implement cloak bypass logic in `src/dark_fort/services/combat.py` — when cloak equipped and player chooses to use it: expend 1 charge, combat skipped, monster points gained, no loot (silver/items/scrolls), room marked explored, cloak removed from inventory when charges reach 0
 - [ ] T052 [US3] Wire potion/scroll usage into CombatScreen (P key = use potion, S key = use scroll) and GameScreen (U key = use item, I key = open CharacterScreen, $ key = open ShopScreen if Void Peddler)
 
 **Checkpoint**: Full item economy functional — inventory management, all scroll effects, shop purchases, cloak charges

@@ -316,7 +316,7 @@ All tables from DARK FORT rules enumerated for implementer and test reference.
 
 ## Assumptions
 
-- The game will be playable in a web browser as the primary platform for MVP accessibility.
+- The game will be playable in a terminal (macOS, Linux, WSL) via a Textual TUI interface as the primary platform for MVP accessibility.
 - Game state will persist locally (browser storage) so a session can be resumed after closing.
 - The visual map will draw rooms automatically based on generated room shapes and door positions; players do not draw rooms by hand as in the pen-and-paper original.
 - Dice rolls are automated and displayed with animated results; players do not need physical dice.
