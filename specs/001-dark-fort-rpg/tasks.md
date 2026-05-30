@@ -70,6 +70,8 @@
 
 ### Implementation for User Story 1
 
+> **Layout**: Follow `contracts/layout.md` for widget placement: StatBar (header), RoomInfo (center-right), ActionBar (footer). TitleScreen CSS: single column, vertically centered.
+
 - [ ] T021 [P] [US1] Implement `DiceRoller` Protocol implementation in `src/dark_fort/services/dice.py` (d4, d6, 2d6, modifiers, display format)
 - [ ] T022 [US1] Implement character creation service in `src/dark_fort/services/character_factory.py` — creates Kargunt with 15 HP, Silver=15+d6, rolls 1d4 on Starting Weapons + Starting Items tables
 - [ ] T023 [P] [US1] Create `StatBar` widget in `src/dark_fort/widgets/stat_bar.py` — displays HP bar, Silver, Points, attack bonus
@@ -100,6 +102,8 @@
 - [ ] T033 [US2] E2E test for explore + fight in `tests/e2e/test_explore_and_fight.py` (full flow: entrance → explore 3 rooms → fight at least 1 weak + 1 tough monster)
 
 ### Implementation for User Story 2
+
+> **Layout**: Follow `contracts/layout.md` — GameScreen: RoomMap (left 2/3), RoomInfo (right 1/3), ActionBar (footer). CombatScreen modal: MonsterBar, PlayerBar, CombatLog, CombatActions.
 
 - [ ] T034 [US2] Implement `RoomGenerator` in `src/dark_fort/services/room_generator.py` — full room table (1d6: nothing, pit trap, soothsayer, weak monster, tough monster, void peddler), shape (2d6), doors (d4), re-entry 1-in-4 weak spawn
 - [ ] T035 [US2] Implement `CombatEngine` in `src/dark_fort/services/combat.py` — hit roll (d6 vs points), weapon damage, unarmed d4-1, monster damage, armor per-hit d4, flee d4, death at 0 HP, loot on kill (silver, items per monster table), points awarded
@@ -132,6 +136,8 @@
 
 ### Implementation for User Story 3
 
+> **Layout**: Follow `contracts/layout.md` — CharacterScreen: stats (left), inventory (right). ShopScreen: DataTable with affordability highlighting, silver display.
+
 - [ ] T047 [P] [US3] Implement `InventoryGrid` widget in `src/dark_fort/widgets/inventory_grid.py` — grid view of all carried items, equipped indicators, use/drop actions
 - [ ] T048 [US3] Implement `CharacterScreen` modal in `src/dark_fort/screens/character_screen.py` per contracts/screens.md — inventory grid, equip/unequip, use potion, stat display
 - [ ] T049 [US3] Implement scroll effects service in `src/dark_fort/services/scrolls.py` — Summon Weak Daemon (d4 fights, d4 damage), Palms Open the Southern Gate (d6+1, d4 uses), Aegis of Sorrow (-d4 per hit, d4 uses, combat duration), False Omen (choose room result OR reroll any die)
@@ -159,6 +165,8 @@
 
 ### Implementation for User Story 4
 
+> **Layout**: Follow `contracts/layout.md` — LevelUpScreen: single column, vertically centered, MonsterChooser for benefit 6.
+
 - [ ] T056 [US4] Implement `LevelingService` in `src/dark_fort/services/leveling.py` — check both conditions (12 rooms + 15 points OR 40+ silver), deduct resources, roll 1d6 on unscratched benefits, apply benefit (Knighted=title, +1 attack=bonus, Max HP 20=cap, 5 potions=inventory, Mighty Zweihänder=inventory, halved damage=monster list), scratch result, detect retirement
 - [ ] T057 [US4] Implement `LevelUpScreen` modal in `src/dark_fort/screens/level_up_screen.py` per contracts/screens.md — roll button, benefit display, monster chooser for benefit 6
 - [ ] T058 [US4] Integrate level-up checks into `GameScreen` — after room cleared check rooms+points; after silver change check silver path; display "Donate 40 silver" action (L key) when silver ≥ 40
@@ -183,6 +191,8 @@
 - [ ] T062 [P] [US5] E2E test for death + traps in `tests/e2e/test_death_and_traps.py` (full flow: encounter pit trap → survive → fight Necro-Sorcerer → survive death-ray → kill Basilisk → level up → die to Medusa → death screen → restart)
 
 ### Implementation for User Story 5
+
+> **Layout**: Follow `contracts/layout.md` — special ability indicators in MonsterBar (death-ray active, petrify risk, level-up chance). Death overlay: centered on GameScreen.
 
 - [ ] T063 [P] [US5] Implement trap resolution in `src/dark_fort/services/room_generator.py` (add to existing file from T034) — pit trap (d6, 1-3 damage, +1 if rope, display rope benefit), soothsayer (separate d6, odd choice 10s/3pts, even d4 ignores armor)
 - [ ] T064 [US5] Implement special monster abilities in `src/dark_fort/services/combat.py` — Necro-Sorcerer alternation (death_ray_alternation toggle), maggot transform 1-in-6 on every attack, Medusa petrify 1-in-6 on every attack, Basilisk immediate level-up 2-in-6 on kill
