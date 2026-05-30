@@ -40,7 +40,7 @@ As a player, I want to explore new rooms, encounter monsters, run combat, manage
 1. **Given** the player is in a room with at least one unexplored door, **When** they choose a door to go through, **Then** a new room is generated with a random shape (2d6), d4 doors, and content from the room table (1d6: nothing, pit trap, soothsayer, weak monster, tough monster, void peddler).
 2. **Given** the player encounters a weak or tough monster, **When** they choose to attack, **Then** the player rolls d6 against the monster's points; on success weapon damage is dealt to the monster; on failure the player takes damage (reduced by d4 if armor equipped).
 3. **Given** the player flees from combat, **When** they choose to flee, **Then** they take d4 damage and the room remains unexplored (can be re-entered later with 1-in-4 chance of weak monster).
-4. **Given** the player has armor equipped, **When** they take damage in combat, **Then** a d4 is rolled and subtracted from incoming damage.
+4. **Given** the player has armor equipped, **When** they take damage in combat, **Then** a d4 is rolled per hit and subtracted from incoming damage.
 5. **Given** the player defeats a monster, **When** it dies, **Then** the monster's points are added to the player's total and loot is rolled per the monster's loot table.
 6. **Given** the player re-enters a previously explored or fled-from room, **When** they enter, **Then** there is a 1-in-4 chance a weak monster has taken residence.
 
@@ -61,7 +61,7 @@ As a player, I want to use potions to heal, activate scrolls for special effects
 3. **Given** the player has the "Palms Open the Southern Gate" scroll (d4 uses), **When** they activate it in combat, **Then** it deals d6+1 damage and one use is expended.
 4. **Given** the player has the "Aegis of Sorrow" scroll (d4 uses), **When** they activate it, **Then** incoming damage is reduced by d4 per attack for the remainder of combat, consuming one use.
 5. **Given** the player has the "False Omen" scroll, **When** they activate it, **Then** they may either choose the result of the next room table roll or reroll any single die.
-6. **Given** the player has the Cloak of Invisibility equipped, **When** they enter a room with monsters, **Then** they may avoid d4 fights while still collecting the monster points.
+6. **Given** the player has the Cloak of Invisibility equipped (d4 charges total), **When** they enter a room with monsters, **Then** they may expend one charge to avoid the fight while still collecting the monster points; cloak is consumed after all charges used.
 7. **Given** the player encounters a Void Peddler, **When** they enter the shop, **Then** they can purchase any item from the price list using silver, and silver is deducted accordingly.
 8. **Given** the player has silver but a full or unlimited inventory, **When** they buy an item from the Void Peddler, **Then** the item is added to inventory.
 
@@ -116,15 +116,16 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - What happens on re-entering the entrance room? Follow the re-entry rule: 1-in-4 chance of a weak monster.
 - How are "d6 rooms explored" counted? Each unique room entered (including entrance) counts as 1; re-entering the same room does not increase the count.
 - Can the player use a potion or scroll during combat? Potions: yes, as an action. Scrolls: yes, following each scroll's activation rules.
+- What happens when the game is saved mid-combat and reloaded? Full combat state is restored: monster HP, death-ray alternation counter, active scroll effect remaining uses/duration, cloak charge count.
 
 ## Requirements
 
 ### Functional Requirements
 
 - **FR-001**: System MUST create a new character named Kargunt with 15 HP, Silver = 15 + d6, and starting equipment determined by rolling 1d4 on both the Weapon and Item tables from DARK FORT rules.
-- **FR-002**: System MUST generate the Entrance Room with d4 doors and one of four random outcomes (item, weak monster, scroll, quiet) per the Entrance Room table.
+- **FR-002**: System MUST generate the Entrance Room with shape from the 2d6 room shape table, d4 doors, and one of four random outcomes (item, weak monster, scroll, quiet) per the Entrance Room table.
 - **FR-003**: System MUST generate new rooms upon door selection with random shape (2d6 table), random number of doors (d4 table), and random content (d6 room table).
-- **FR-004**: System MUST implement the dice-based combat system: player rolls d6 to hit, comparing against monster's points; on success, weapon damage is dealt; on failure, player takes damage (reduced by d4 if armor equipped).
+- **FR-004**: System MUST implement the dice-based combat system: player rolls d6 to hit, comparing against monster's points; on success, weapon damage is dealt (d4-1 if unarmed); on failure, player takes monster damage (reduced by d4 rolled per hit if armor equipped).
 - **FR-005**: System MUST support combat flee: player takes d4 damage, room remains unexplored, re-entry has 1-in-4 chance of weak monster.
 - **FR-006**: System MUST implement all 4 Weak Monster types with their stats, damage, HP, and loot tables (Skeleton, Cultist, Goblin, Undead Hound).
 - **FR-007**: System MUST implement all 4 Tough Monster types with their stats, special abilities, damage, HP, and loot tables (Necro-Sorcerer, Stone Troll, Medusa, Basilisk).
@@ -138,7 +139,7 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - **FR-015**: System MUST implement death at 0 HP: game ends, death screen displayed, option to restart.
 - **FR-016**: System MUST track explored room count (unique rooms only), total points from slain monsters, current/max HP, silver balance, inventory, active scroll effects, and level-up table state.
 - **FR-017**: System MUST NOT allow entering a new room through a door that has no unexplored path (e.g., from a dead-end room, only backtracking is allowed).
-- **FR-018**: System MUST apply the Cloak of Invisibility effect: avoid d4 fights while collecting monster points from avoided encounters.
+- **FR-018**: System MUST apply the Cloak of Invisibility effect: when equipped, player may avoid up to d4 fights while collecting monster points from avoided encounters; cloak is consumed after all d4 charges are used.
 
 ### Key Entities
 
@@ -158,7 +159,11 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - Q: When does Necro-Sorcerer's 1-in-6 maggot transformation trigger? → A: On every sorcerer attack (normal d4 and death-ray d6), not only death-ray attacks
 - Q: When does Medusa's 1-in-6 petrification trigger? → A: On every Medusa attack
 - Q: What happens to silver on the silver level-up path? → A: Deduct exactly 40 silver; any remaining silver is kept (not a full reset to 0)
-- Q: For level-up benefit 6, does "Choose 1 Weak + 1 Tough monster; their damage is halved" affect all monsters in each category or only the chosen types? → A: Only the two specific monster types chosen (one Weak, one Tough) have halved damage
+- Q: Should unarmed damage (d4-1 per DARK FORT) be a formal requirement? → A: Yes; added to FR-004
+- Q: Does armor absorb d4 damage per hit or once per combat? → A: Per hit — roll d4 each time the player takes damage
+- Q: Does the Cloak of Invisibility have d4 charges total (consumed) or recharge per room? → A: d4 charges total; cloak is consumed after all charges used
+- Q: Should the entrance room use the 2d6 room shape table or have its own shape rule? → A: Use the 2d6 shape table for entrance room (same as all rooms)
+- Q: Should save system preserve mid-combat state or only save between rooms? → A: Preserve full mid-combat state (monster HP, death-ray counter, active effects, charges)
 
 ## Success Criteria
 
@@ -167,7 +172,7 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - **SC-001**: A player can start a new game and reach their first combat encounter within 30 seconds of launching the game.
 - **SC-002**: All combat outcomes (hit, miss, damage calculation, flee) compute correctly against the DARK FORT rules table for all 8 monster types across 100 automated simulated combats.
 - **SC-003**: A player can complete a full game run (start → explore 12+ rooms → level up multiple times → retire) in under 30 minutes.
-- **SC-004**: The game state survives an application restart without data loss (resumable session).
+- **SC-004**: The game state survives an application restart without data loss, including mid-combat state (monster HP, death-ray alternation, active scroll effects, cloak charges).
 - **SC-005**: A new player with no prior knowledge of DARK FORT can successfully navigate through at least 3 rooms without external help or rulebook reference, based on in-game UI guidance.
 - **SC-006**: All dice-based random outcomes (monster spawns, room contents, combat rolls, loot, level-up benefits) match the probability distributions specified in DARK FORT rules within 5% tolerance over 10,000 samples.
 
