@@ -8,7 +8,7 @@
 
 Implement a single-player dungeon crawler RPG as a Textual TUI application, faithfully implementing all DARK_FORT.md rules. Player character Kargunt explores procedurally generated rooms, fights monsters with dice-based combat, manages inventory, buys items from the Void Peddler, and levels up through 6 distinct benefits. Game state persists locally via JSON serialization with Pydantic models.
 
-Technical approach: Model → Service → Screen vertical slices per the trace bullet principle. Every component exposes an interface (ABC/Protocol). TDD enforced: unit tests for pure logic, Textual UI integration tests for component interaction, E2E tests for full game flows.
+Technical approach: Model → Service → Screen vertical slices per the trace bullet principle. Every component exposes an interface via `typing.Protocol` (structural subtyping, no explicit inheritance). TDD enforced: unit tests for pure logic, Textual UI integration tests for component interaction, E2E tests for full game flows.
 
 ## Technical Context
 
@@ -40,7 +40,7 @@ Technical approach: Model → Service → Screen vertical slices per the trace b
 
 ### II. Interface-Driven Design
 
-✅ **Plan**: Every service exposes an ABC (`DiceRoller`, `CombatEngine`, `RoomGenerator`, `LevelingService`, `ShopService`). GoF patterns: Strategy (dice mechanics), Command (player actions), Observer (game state changes → UI updates), Factory (monster/room generation). Dependencies injected via constructor.
+✅ **Plan**: Every service exposes a Protocol inheriting from `typing.Protocol` (structural subtyping, pure contract). ABC used only for base classes with shared behavior. GoF patterns: Strategy (dice mechanics), Command (player actions), Observer (game state changes → UI updates), Factory (monster/room generation). Dependencies injected via constructor.
 
 ### III. Integration Testing
 
@@ -99,7 +99,7 @@ src/dark_fort/
 │   └── game_state.py         # GameState — save/load envelope (Pydantic)
 ├── services/
 │   ├── __init__.py
-│   ├── interfaces.py         # ABCs: DiceRoller, CombatEngine, RoomGenerator, etc.
+│   ├── interfaces.py         # Protocols: DiceRoller, CombatEngine, RoomGenerator, etc.
 │   ├── dice.py               # DiceRoller implementation
 │   ├── combat.py             # CombatEngine implementation
 │   ├── room_generator.py     # RoomGenerator implementation

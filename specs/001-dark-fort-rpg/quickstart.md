@@ -65,7 +65,7 @@ tests/
 ## Architecture
 
 - **Model layer**: Pydantic v2 — schema validation, JSON serialization for saves
-- **Service layer**: Pure Python with ABC interfaces — dice rolling, combat, room generation, leveling, shop
+- **Service layer**: Pure Python with `typing.Protocol` interfaces — dice rolling, combat, room generation, leveling, shop
 - **UI layer**: Textual — reactive TUI with screens, modals, widgets
 - **Persistence**: JSON file via Pydantic `.model_dump()` / `.model_validate()`
 
