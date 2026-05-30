@@ -52,7 +52,7 @@ Technical approach: Model → Service → Screen vertical slices per the trace b
 - US1 (P1): Title screen → Character model → Character persistence → New game flow
 - US2 (P1): Game screen → Room generator → Room model → Combat engine → Map widget
 - US3 (P2): Inventory widget → Item models → Shop screen → Scroll effects
-- US4 (P2): Level-up logic → Level-up screen → Benefit application → Win condition
+- US4 (P2): Level-up logic → Level-up screen → Benefit application → Character persistence → Win condition
 - US5 (P3): Trap effects → Special monster abilities → Death/permadeath → Game over
 
 ### V. Green Tests Gate
@@ -93,7 +93,7 @@ src/dark_fort/
 ├── models/
 │   ├── __init__.py
 │   ├── character.py          # Character, Inventory (Pydantic)
-│   ├── monster.py            # Monster, MonsterType, MonsterTemplate (Pydantic)
+│   ├── monster.py            # Monster, SpecialAbility, LootItem (Pydantic)
 │   ├── room.py               # Room, RoomContent, RoomShape, DoorCount (Pydantic)
 │   ├── items.py              # Weapon, Scroll, Potion, Armor, Cloak, Rope (Pydantic)
 │   └── game_state.py         # GameState — save/load envelope (Pydantic)

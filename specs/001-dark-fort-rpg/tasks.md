@@ -75,7 +75,7 @@
 - [ ] T023 [P] [US1] Create `StatBar` widget in `src/dark_fort/widgets/stat_bar.py` — displays HP bar, Silver, Points, attack bonus
 - [ ] T024 [P] [US1] Create `DiceDisplay` widget in `src/dark_fort/widgets/dice_display.py` — animated dice roll rendering
 - [ ] T025 [US1] Implement `TitleScreen` in `src/dark_fort/screens/title_screen.py` per contracts/screens.md — N=New Game, C=Continue (if save exists), Q=Quit
-- [ ] T026 [US1] Implement entrance room generation in `src/dark_fort/services/room_generator.py` — entrance room: 2d6 shape, d4 doors, 1d4 content
+- [ ] T026 [US1] Implement entrance room logic in `src/dark_fort/services/room_generator.py` — entrance room only: 2d6 shape, d4 doors, 1d4 content (item/weak monster/scroll/quiet)
 - [ ] T027 [US1] Implement `GameScreen` shell in `src/dark_fort/screens/game_screen.py` — room display, StatBar, door choices, action buttons (door actions only for US1)
 - [ ] T028 [US1] Wire `DarkFortApp` screen stack in `src/dark_fort/app.py` — TitleScreen → GameScreen transition on new game, pass fresh GameState
 
@@ -184,7 +184,7 @@
 
 ### Implementation for User Story 5
 
-- [ ] T063 [P] [US5] Implement trap resolution in `src/dark_fort/services/room_generator.py` — pit trap (d6, 1-3 damage, +1 if rope, display rope benefit), soothsayer (separate d6, odd choice 10s/3pts, even d4 ignores armor)
+- [ ] T063 [P] [US5] Implement trap resolution in `src/dark_fort/services/room_generator.py` (add to existing file from T034) — pit trap (d6, 1-3 damage, +1 if rope, display rope benefit), soothsayer (separate d6, odd choice 10s/3pts, even d4 ignores armor)
 - [ ] T064 [US5] Implement special monster abilities in `src/dark_fort/services/combat.py` — Necro-Sorcerer alternation (death_ray_alternation toggle), maggot transform 1-in-6 on every attack, Medusa petrify 1-in-6 on every attack, Basilisk immediate level-up 2-in-6 on kill
 - [ ] T065 [US5] Implement death handling in `GameScreen` — 0 HP triggers death overlay, game over text, option to restart (clears save, returns to TitleScreen)
 - [ ] T066 [US5] Update `CombatScreen` to display special ability warnings (death-ray active indicator, petrify risk hint, basilisk level-up chance) and apply effects in combat flow
@@ -206,6 +206,7 @@
 - [ ] T073 Run full test suite (`make test`) — all unit + integration + e2e must be green
 - [ ] T074 [P] Run `make check` — final quality gate (lint + typecheck + test)
 - [ ] T075 Validate against quickstart.md — `uv sync && make run` works on clean checkout, `make test` passes
+- [ ] T076 [P] Validate dice probability distributions per SC-006 — 10,000-sample statistical test for monster spawns, room contents, combat rolls, loot, and level-up benefits; assert within 5% tolerance of DARK FORT table probabilities
 
 ---
 
