@@ -77,11 +77,12 @@ As a player, I want to level up when I meet requirements (12 rooms explored + 15
 
 **Acceptance Scenarios**:
 
-1. **Given** the player has explored 12 rooms (including entrance) AND has 15+ points, **When** these conditions are met, **Then** the player levels up, rolling 1d6 for a benefit from the unscratched level-up table.
-2. **Given** the player has collected 40 silver, **When** they choose to give it to the poor of ruined Wästland, **Then** the player levels up (silver reset), rolling 1d6 for a benefit.
+1. **Given** the player has explored 12 rooms (including entrance) AND has 15+ points, **When** these conditions are met, **Then** the player levels up: 15 points are deducted from the total (room count continues accumulating), and 1d6 is rolled for a benefit from the unscratched level-up table.
+2. **Given** the player has collected 40+ silver, **When** they choose to give 40 silver to the poor of ruined Wästland, **Then** exactly 40 silver is deducted (remaining silver kept) and the player levels up, rolling 1d6 for a benefit.
 3. **Given** the "Knighted" benefit is rolled (1), **When** applied, **Then** the player gains the title Sir/Lady Kargunt and the result is scratched off the level-up table.
 4. **Given** the "Max HP becomes 20" benefit is rolled (3), **When** applied, **Then** the player's maximum HP increases to 20 and current HP is unaffected.
 5. **Given** all 6 level-up benefits have been earned, **When** the player retires, **Then** a congratulations screen appears and the game is complete.
+6. **Given** the "Halved damage" benefit is rolled (6), **When** applied, **Then** the player chooses one specific Weak monster type and one specific Tough monster type; only those two types deal half damage permanently, and the result is scratched off.
 
 ---
 
@@ -96,8 +97,8 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 **Acceptance Scenarios**:
 
 1. **Given** the player enters a pit trap room, **When** rolling d6 and getting 1-3, **Then** they take d6 damage; if rope is in inventory, +1 is added to the roll (making 2-3 safe instead of 1-3 dangerous).
-2. **Given** the player fights a Necro-Sorcerer, **When** making every other attack, **Then** the sorcerer's damage type is d6 death-ray instead of d4; a separate 1-in-6 roll determines if the player is transformed into a maggot (instant game over).
-3. **Given** the player fights a Medusa, **When** any attack occurs, **Then** a 1-in-6 roll determines petrification with instant game over.
+2. **Given** the player fights a Necro-Sorcerer, **When** the sorcerer makes any attack (normal or death-ray every other), **Then** the sorcerer's damage alternates between d4 and d6 death-ray; a separate 1-in-6 roll on EVERY attack determines if the player is transformed into a maggot (instant game over).
+3. **Given** the player fights a Medusa, **When** the Medusa makes any attack, **Then** a 1-in-6 roll determines petrification with instant game over.
 4. **Given** the player has 0 HP, **When** this occurs, **Then** the game ends immediately showing a death screen and option to restart.
 5. **Given** the player encounters a Riddling Soothsayer, **When** rolling odd on d6, **Then** the player chooses to gain 10 silver or 3 points; when rolling even, the player takes d4 damage ignoring armor.
 6. **Given** the player kills a Ruin Basilisk, **When** the 2-in-6 check succeeds, **Then** the player immediately levels up.
@@ -131,9 +132,9 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - **FR-009**: System MUST support inventory management: player can carry potions, scrolls, rope, cloak; equip/unequip weapons and armor; use consumable items.
 - **FR-010**: System MUST implement all 4 scroll types with their effects and usage limits (Summon Weak Daemon, Palms Open the Southern Gate, Aegis of Sorrow, False Omen).
 - **FR-011**: System MUST implement the Void Peddler shop: display all items with prices; allow purchase if player has sufficient silver; deduct silver on purchase.
-- **FR-012**: System MUST implement the level-up system: check two conditions (12 rooms + 15 points OR 40 silver donated); roll 1d6 for benefit from unscratched table; apply benefit; scratch off result; congratulate on completing all 6.
+- **FR-012**: System MUST implement the level-up system: check two conditions (12 rooms + 15 points OR 40+ silver to donate); on rooms+points path: deduct 15 points from total (room count persists); on silver path: deduct exactly 40 silver (remaining silver kept); roll 1d6 for benefit from unscratched table; apply benefit; scratch off result; congratulate on completing all 6.
 - **FR-013**: System MUST implement pit traps (d6 roll: 1-3 take d6 damage, +1 if rope) and the Riddling Soothsayer (odd: gain 10 silver or 3 points; even: take d4 damage ignoring armor).
-- **FR-014**: System MUST implement monster special abilities: Necro-Sorcerer death-ray (every other attack, d6) + 1-in-6 maggot transformation; Medusa 1-in-6 petrification; Basilisk 2-in-6 immediate level-up on kill.
+- **FR-014**: System MUST implement monster special abilities: Necro-Sorcerer death-ray (every other attack deals d6 instead of d4) + 1-in-6 maggot transformation on EVERY attack (normal and death-ray); Medusa 1-in-6 petrification on EVERY attack; Basilisk 2-in-6 immediate level-up on kill.
 - **FR-015**: System MUST implement death at 0 HP: game ends, death screen displayed, option to restart.
 - **FR-016**: System MUST track explored room count (unique rooms only), total points from slain monsters, current/max HP, silver balance, inventory, active scroll effects, and level-up table state.
 - **FR-017**: System MUST NOT allow entering a new room through a door that has no unexplored path (e.g., from a dead-end room, only backtracking is allowed).
@@ -148,6 +149,16 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - **Scroll**: Name, effect description, number of uses (d4 for most, single-use for daemon), effect mechanics.
 - **Item**: Name, type (potion/rope/cloak/armor), effect, value at Void Peddler.
 - **Game State**: All persistence-relevant data needed to save/load the game: character state, room graph, explored rooms, active combats.
+
+## Clarifications
+
+### Session 2026-05-30
+
+- Q: After leveling via rooms+points path, what happens to points and room count? → A: Deduct 15 points from total; room count continues accumulating (points consumed, rooms permanent)
+- Q: When does Necro-Sorcerer's 1-in-6 maggot transformation trigger? → A: On every sorcerer attack (normal d4 and death-ray d6), not only death-ray attacks
+- Q: When does Medusa's 1-in-6 petrification trigger? → A: On every Medusa attack
+- Q: What happens to silver on the silver level-up path? → A: Deduct exactly 40 silver; any remaining silver is kept (not a full reset to 0)
+- Q: For level-up benefit 6, does "Choose 1 Weak + 1 Tough monster; their damage is halved" affect all monsters in each category or only the chosen types? → A: Only the two specific monster types chosen (one Weak, one Tough) have halved damage
 
 ## Success Criteria
 
