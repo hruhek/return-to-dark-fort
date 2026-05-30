@@ -127,15 +127,15 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 
 - **FR-001**: System MUST create a new character named Kargunt with 15 HP, Silver = 15 + d6, and starting equipment determined by rolling 1d4 on both the Weapon and Item tables from DARK FORT rules.
 - **FR-002**: System MUST generate the Entrance Room with shape from the 2d6 room shape table, d4 doors, and one of four random outcomes (item, weak monster, scroll, quiet) per the Entrance Room table.
-- **FR-003**: System MUST generate new rooms upon door selection with random shape (2d6 table), random number of doors (d4 table), and random content (d6 room table).
+- **FR-003**: System MUST generate new rooms upon door selection with random shape (Room Shapes 2d6 table), random number of doors (Doors per Room 1d4 table), and random content (Room Content 1d6 table).
 - **FR-004**: System MUST implement the dice-based combat system: player rolls d6 to hit, comparing against monster's points; on success, weapon damage is dealt (d4-1 if unarmed); on failure, player takes monster damage (reduced by d4 rolled per hit if armor equipped).
 - **FR-005**: System MUST support combat flee: player takes d4 damage, room remains unexplored (does not count toward explored room total), monster persists until killed; re-entry has 1-in-4 chance of weak monster.
-- **FR-006**: System MUST implement all 4 Weak Monster types with their stats, damage, HP, and loot tables (Skeleton, Cultist, Goblin, Undead Hound).
-- **FR-007**: System MUST implement all 4 Tough Monster types with their stats, special abilities, damage, HP, and loot tables (Necro-Sorcerer, Stone Troll, Medusa, Basilisk).
+- **FR-006**: System MUST implement all 4 Weak Monster types per the Weak Monsters reference table (Blood-Drenched Skeleton, Catacomb Cultist, Goblin, Undead Hound) with exact points, damage, HP, and loot probabilities.
+- **FR-007**: System MUST implement all 4 Tough Monster types per the Tough Monsters reference table (Necro-Sorcerer, Small Stone Troll, Medusa, Ruin Basilisk) with exact points, damage, HP, special abilities, and loot.
 - **FR-008**: System MUST handle monster deaths: slain monsters grant their points; loot is rolled per monster table; Small Stone Troll awards 7 points on kill.
 - **FR-009**: System MUST support inventory management: player can carry potions, scrolls, rope, cloak; equip/unequip weapons and armor; use consumable items.
 - **FR-010**: System MUST implement all 4 scroll types with their effects and usage limits (Summon Weak Daemon, Palms Open the Southern Gate, Aegis of Sorrow, False Omen).
-- **FR-011**: System MUST implement the Void Peddler shop: display all items with prices; allow purchase if player has sufficient silver; deduct silver on purchase.
+- **FR-011**: System MUST implement the Void Peddler shop per the Void Peddler Prices reference table: display all items with exact prices; allow purchase if player has sufficient silver; deduct silver on purchase.
 - **FR-012**: System MUST implement the level-up system: check two conditions (12 rooms + 15 points OR 40+ silver to donate); on rooms+points path: deduct 15 points from total (room count persists); on silver path: deduct exactly 40 silver (remaining silver kept); roll 1d6 for benefit from unscratched table; apply benefit; scratch off result; congratulate on completing all 6.
 - **FR-013**: System MUST implement pit traps (d6 roll: 1-3 take d6 damage, +1 if rope) and the Riddling Soothsayer (separate d6 roll: odd = gain 10 silver or 3 points; even = take d4 damage ignoring armor).
 - **FR-014**: System MUST implement monster special abilities: Necro-Sorcerer death-ray (every other attack deals d6 instead of d4) + 1-in-6 maggot transformation on EVERY attack (normal and death-ray); Medusa 1-in-6 petrification on EVERY attack; Basilisk 2-in-6 immediate level-up on kill.
@@ -153,6 +153,135 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - **Scroll**: Name, effect description, number of uses (d4 for most, single-use for daemon), effect mechanics.
 - **Item**: Name, type (potion/rope/cloak/armor), effect, value at Void Peddler.
 - **Game State**: All persistence-relevant data needed to save/load the game: character state, room graph, explored rooms, active combats.
+
+## Reference Tables
+
+All tables from DARK FORT rules enumerated for implementer and test reference.
+
+### Starting Weapons (1d4)
+
+| d4 | Weapon | Damage | Modifier |
+|----|--------|--------|----------|
+| 1 | Warhammer | d6 | — |
+| 2 | Dagger | d4 | +1 attack |
+| 3 | Sword | d6 | +1 attack |
+| 4 | Flail | d6+1 | — |
+
+### Starting Items (1d4)
+
+| d4 | Item | Effect |
+|----|------|--------|
+| 1 | Armor | Absorbs d4 damage per hit |
+| 2 | Potion | Heal d6 HP |
+| 3 | Scroll: Summon weak daemon | Daemon helps d4 fights, dealing d4 damage |
+| 4 | Cloak of invisibility | Avoid d4 fights, gain monster points, no loot |
+
+### All Weapons (includes Void Peddler exclusives)
+
+| Weapon | Damage | Modifier | Void Peddler Cost |
+|--------|--------|----------|-------------------|
+| Dagger | d4 | +1 attack | 6s |
+| Warhammer | d6 | — | 9s |
+| Sword | d6 | +1 attack | 12s |
+| Flail | d6+1 | — | 15s |
+| Mighty Zweihänder | d6+2 | — | 25s |
+
+### Weak Monsters (1d4)
+
+| d4 | Name | Points | Damage | HP | Loot (2-in-6) |
+|----|------|--------|--------|----|---------------|
+| 1 | Blood-Drenched Skeleton | 3 | d4 | 6 | Dagger |
+| 2 | Catacomb Cultist | 3 | d4 | 6 | Random scroll |
+| 3 | Goblin | 3 | d4 | 5 | Rope |
+| 4 | Undead Hound | 4 | d4 | 6 | — |
+
+### Tough Monsters (1d4)
+
+| d4 | Name | Points | Damage | HP | Special | Loot |
+|----|------|--------|--------|----|---------|------|
+| 1 | Necro-Sorcerer | 4 | d4 (alt. d6 death-ray) | 8 | 1-in-6 maggot (game over) on every attack | 3d6 silver |
+| 2 | Small Stone Troll | 5 (7 on kill) | d6+1 | 9 | — | — |
+| 3 | Medusa | 4 | d6 | 10 | 1-in-6 petrified (game over) on every attack | d4×d6 silver |
+| 4 | Ruin Basilisk | 4 | d6 | 11 | 2-in-6 immediate level up on kill | — |
+
+### Room Content (1d6)
+
+| d6 | Result | Details |
+|----|--------|---------|
+| 1 | Nothing | Room is explored |
+| 2 | Pit trap | Roll d6: 1-3 take d6 damage; +1 if rope in inventory |
+| 3 | Riddling Soothsayer | Separate d6: odd → gain 10 silver or 3 points; even → d4 damage (ignores armor) |
+| 4 | Weak monster | Roll 1d4 on Weak Monsters table |
+| 5 | Tough monster | Roll 1d4 on Tough Monsters table |
+| 6 | Void Peddler | Shop with price list below |
+
+### Void Peddler Prices
+
+| Item | Cost |
+|------|------|
+| Potion (heal d6) | 4s |
+| Random scroll | 7s |
+| Dagger (d4, +1 attack) | 6s |
+| Warhammer (d6) | 9s |
+| Rope | 5s |
+| Sword (d6, +1 attack) | 12s |
+| Flail (d6+1) | 15s |
+| Mighty Zweihänder (d6+2) | 25s |
+| Armor (-d4 per hit) | 10s |
+| Cloak of invisibility | 15s |
+
+### Room Shapes (2d6)
+
+| 2d6 | Shape |
+|-----|-------|
+| 2 | Irregular cave |
+| 3 | Oval |
+| 4 | Cross-shaped |
+| 5 | Corridor |
+| 6-8 | Square |
+| 9 | Round |
+| 10 | Rectangular |
+| 11 | Triangular |
+| 12 | Skull-shaped |
+
+### Doors per Room (1d4)
+
+| d4 | Doors |
+|----|-------|
+| 1 | No door (dead end) |
+| 2 | One door |
+| 3-4 | Two doors |
+
+### Random Items (1d6)
+
+| d6 | Item |
+|----|------|
+| 1 | Random weapon (roll 1d4 on All Weapons table, excluding Mighty Zweihänder) |
+| 2 | Potion |
+| 3 | Rope |
+| 4 | Random scroll (roll 1d4 on Scrolls table) |
+| 5 | Armor |
+| 6 | Cloak of invisibility |
+
+### Scrolls (1d4)
+
+| d4 | Scroll | Effect | Uses |
+|----|--------|--------|------|
+| 1 | Summon weak daemon | Daemon helps d4 fights, dealing d4 damage per fight | Single use (consumed) |
+| 2 | Palms Open the Southern Gate | Deal d6+1 damage | d4 uses |
+| 3 | Aegis of Sorrow | Reduce incoming damage by d4 per attack for remainder of combat | d4 uses |
+| 4 | False Omen | Choose next room table result OR reroll any single die | Single use (consumed) |
+
+### Level-Up Benefits (1d6)
+
+| d6 | Benefit | Effect |
+|----|---------|--------|
+| 1 | Knighted | Title becomes Sir/Lady Kargunt |
+| 2 | +1 attack | Permanent +1 to all future hit rolls |
+| 3 | Max HP 20 | Maximum HP increases to 20 (current HP unchanged) |
+| 4 | Gain 5 potions | 5 potions added to inventory |
+| 5 | Gain Mighty Zweihänder | Mighty Zweihänder (d6+2) added to inventory |
+| 6 | Halved damage | Choose 1 specific Weak + 1 specific Tough monster type; their damage halved permanently |
 
 ## Clarifications
 
@@ -172,6 +301,7 @@ As a player, I want to experience traps, deadly monster abilities, permadeath, a
 - Q: Do fled rooms count as explored? What about the monster? → A: Fled rooms do NOT count as explored; the monster stays until killed, only then is the room explored
 - Q: Does the 1-in-4 weak monster re-entry check trigger on every re-entry or only once? → A: Every re-entry — roll 1-in-4 each time player enters a previously visited room
 - Q: What determines the Soothsayer's odd/even outcome? → A: A separate d6 roll (not the room content d6 that triggered the Soothsayer)
+- Q: Should all DARK FORT tables be explicitly enumerated in the spec? → A: Yes; all reference tables listed inline
 
 ## Success Criteria
 
